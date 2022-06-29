@@ -12,13 +12,16 @@ def hello_world():  # put application's code here
     return 'Hello World!'
 
 
-@app.route("/ukiyoe", methods=["GET", "POST"])
+@app.route("/ukiyoe", methods=["POST"])
 def parse():
     data = request.get_json()
-    dict_data = json.loads(data)
+    if type(data) != dict:
+        data = json.loads(data)
+
+    # print(data)
 
     # base64をPillow形式に変換
-    img = dict_data["img"]
+    img = data["base64"]
     img = base64.b64decode(img)  # base64に変換された画像データをバイナリに変換
     img = BytesIO(img)  # _io.BytesIO pillowで扱えるように変換
     img = Image.open(img)  # Pillow形式に変換
@@ -34,7 +37,9 @@ def parse():
     img_base64 = base64.b64encode(img_byte)
     img_str = img_base64.decode('utf-8')
 
-    responce = {'ukiyo_face': img_str}
+    responce = {'base64': img_str}
+
+    # print(responce)
 
     return jsonify(responce)
 
