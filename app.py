@@ -77,7 +77,7 @@ def detect_ukiyoe_face(x):
             return x
 
     model = Model()
-    model.load_state_dict(torch.load('/Users/katoyuga/Downloads/model.pth'))
+    model.load_state_dict(torch.load('resources/model.pth'))
     y = model(x)
     y_label = torch.argmax(y, dim=0)
     print(y_label)
