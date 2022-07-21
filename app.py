@@ -3,10 +3,12 @@ import base64
 from io import BytesIO
 from PIL import Image, ImageOps
 import json
-from torch import nn
 import torch
 import numpy as np
+from ai import Model
 app = Flask(__name__)
+
+model = Model()
 
 
 @app.route('/hello', methods=["GET"])
@@ -58,25 +60,6 @@ def aws_test():
 
 def detect_ukiyoe_face(x):
 
-    INPUT_SIZE = 60
-    OUTPUT_SIZE = 1000
-
-    class Model(nn.Module):
-        def __init__(self):
-            super(Model, self).__init__()
-
-            self.fc = nn.Sequential(
-                nn.Linear(INPUT_SIZE, 500),
-                nn.ReLU(),
-                nn.Linear(500, OUTPUT_SIZE),
-
-            )
-
-        def forward(self, x):
-            x = self.fc(x)
-            return x
-
-    model = Model()
     model.load_state_dict(torch.load('resources/model.pth'))
     y = model(x)
     y_label = torch.argmax(y, dim=0)
@@ -110,10 +93,8 @@ def parse():
 
     response = {'base64': img_str}
 
-    # print(response)
-
     return jsonify(response)
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=8080)
