@@ -5,8 +5,9 @@ from PIL import Image, ImageOps
 import json
 import torch
 import numpy as np
-from ai import Model
 import pandas as pd
+from aws import RekognitionImage
+from ai import Model
 
 app = Flask(__name__)
 
@@ -20,7 +21,6 @@ def hello_world():  # put application's code here
 
 @app.route('/ukiyoe', methods=["POST"])
 def aws_test():
-    from aws import RekognitionImage
     data = request.get_json()
 
     if type(data) != dict:
